@@ -1,0 +1,133 @@
+#%RAML 1.0
+---
+title: Curly
+baseUri: http://localhost/{version}
+version: v1
+
+/register:
+  description: Register user
+  post:
+    description: Create new user
+    queryParameters:
+      email:
+        description: "The user email"
+        required: true
+        type: string
+      registerDate:
+        description: "The date when user registered"
+        required: true
+        type: date
+      snapchat:
+        description: "The user snapchat pseudo"
+        required: true
+        type: string
+      instagram:
+        description: "The user instagram pseudo"
+        required: true
+        type: string
+      password:
+        description: "The user password"
+        required: true
+        type: string
+      confirmedPassword:
+        description: "The user password confirmation"
+        required: true
+        type: string
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "auth": "true",
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZGQxY2IxNWU2YWU3YTMzMTFmYjljYyIsImlhdCI6MTUwNzY2MzAyNSwiZXhwIjoxNTA3NzQ5NDI1fQ.PC6EqYTBqcJHG2m2rR29HZG_TImnIepLAfGzVRjfJIg"
+              }
+/login:
+  description: Route for user connexion
+  post:
+    description: Verify user and password
+    queryParameters:
+      email:
+        description: "The user email"
+        required: true
+        type: string
+      password:
+        description: "The user password"
+        required: true
+        type: string
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "auth": true,
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZGQxY2IxNWU2YWU3YTMzMTFmYjljYyIsImlhdCI6MTUwNzY2MzAyNSwiZXhwIjoxNTA3NzQ5NDI1fQ.PC6EqYTBqcJHG2m2rR29HZG_TImnIepLAfGzVRjfJIg"
+              }
+      401:
+        body:
+          application/json:
+            example: |
+              {
+                "auth": false,
+                "token": null
+              }
+/users:
+  /newer:
+    description: Get 50 last registered users
+    get:
+      description: Get 50 last registered users
+      headers:
+        x-access-token:
+          type: string
+          description: token authorization
+          example: |
+            x-access-token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZGQxY2IxNWU2YWU3YTMzMTFmYjljYyIsImlhdCI6MTUwNzY2MzAyNSwiZXhwIjoxNTA3NzQ5NDI1fQ.PC6EqYTBqcJHG2m2rR29HZG_TImnIepLAfGzVRjfJIg"
+      responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "newUsers": [
+                      {
+                        "snapchat": String,
+                        "photo": String,
+                        "zipCode": Number
+                      },
+                      {
+                        "snapchat": String,
+                        "photo": String,
+                        "zipCode": Number
+                      }
+                    ]
+                  }
+  /{userId}:
+    description: get information for one user
+    get:
+      description: get information for one user
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "snapchat": String,
+                  "instagram": String,
+                  "photo": String,
+                  "zipCode": Number
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User not found"
+                }
+        401:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Your are not allow to access to this page"
+                }
