@@ -11,10 +11,17 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 router.post('/register', (req, res) => {
+
+  console.log('cathced by register route');
+
   let hashedPassword = bcrypt.hashSync(req.body.password, 8);
+  let hashedConfirmedPassword = bcrypt.hashSync(req.body.confirmedPassword, 8);
   User.create({
     email : req.body.email,
-    password : hashedPassword
+    password : hashedPassword,
+    confirmedPassword : hashedConfirmedPassword,
+    snapchat: req.body.snapchat,
+    instagram: req.body.instagram
   },
   (err, user) => {
     if (err) {

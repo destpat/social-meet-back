@@ -2,7 +2,11 @@ var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({
   email: String,
-  password: String
+  password: String,
+  snapchat: String,
+  instagram: String,
+  password: String,
+  confirmedPassword: String
 });
 
 mongoose.model('User', UserSchema);
