@@ -1,18 +1,32 @@
 const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
-router.use(bodyParser.urlencoded({ extended: true }));
-
+const VerifyToken = require('../auth/VerifyToken');
 const User = require('./User');
 
-router.post('/', function (req, res) {
-  User.create({
-          userName : req.body.userName,
-          email : req.body.email,
-          password : req.body.password
-        },
-    function (err, user) {
-      if (err) return res.status(500).send("There was a problem adding the information to the database.");
+router.use(bodyParser.urlencoded({ extended: true }));
+
+// RETURNS ALL THE USERS IN THE DATABASE
+router.get('/newer', VerifyToken, function (req, res) {
+    User.find({}, 'snapchat photo')
+        .sort('-registerDate')
+        .limit(55)
+        .exec(function (err, users) {
+          if (err) {
+            return res.status(500).send("There was a problem finding the users.");
+          }
+          res.status(200).send(users);
+        });
+      });
+
+router.get('/:userId', VerifyToken, function (req, res) {
+    User.findById(req.params.userId, {confirmedPassword: 0, password: 0, registerDate: 0} , function (err, user) {
+      if (err) {
+        return res.status(500).send("There was a problem finding the user.");
+      }
+      if (!user) {
+        return res.status(404).send("No user found.");
+      }
       res.status(200).send(user);
     });
 });

@@ -1,31 +1,36 @@
-let express = require('express');
-let jwt = require('jsonwebtoken');
-let bodyParser = require('body-parser');
-let bcrypt = require('bcryptjs');
-let User = require('../user/User');
-let config = require('../config');
-let VerifyToken = require('./VerifyToken');
-let router = express.Router();
+const express = require('express');
+const moment = require('moment');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
+const User = require('../user/User');
+const config = require('../config');
+const VerifyToken = require('./VerifyToken');
+const router = express.Router();
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 router.post('/register', (req, res) => {
-
-  console.log('cathced by register route');
-
+  if (req.body.password !== req.body.confirmedPassword || req.body.password.length < 8) {
+    return res.status(500).send("There was a problem registering the user.")
+  }
   let hashedPassword = bcrypt.hashSync(req.body.password, 8);
-  let hashedConfirmedPassword = bcrypt.hashSync(req.body.confirmedPassword, 8);
   User.create({
     email : req.body.email,
-    password : hashedPassword,
-    confirmedPassword : hashedConfirmedPassword,
+    photo : req.body.photo,
+    registerDate: moment().format("YYYY-MM-DD"),
     snapchat: req.body.snapchat,
-    instagram: req.body.instagram
-  },
-  (err, user) => {
+    instagram: req.body.instagram,
+    password : hashedPassword,
+    sexe: req.body.sexe,
+    origin: req.body.origin,
+    city: req.body.city,
+    eyesColor: req.body.eyesColor,
+    birthDate: req.body.birthDate
+  },(err, user) => {
     if (err) {
-      return res.status(500).send("There was a problem registering the user.")
+      return res.status(500).send(err)
     }
     // create a token
     let token = jwt.sign({ id: user._id }, config.secret, {
