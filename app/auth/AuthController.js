@@ -6,12 +6,13 @@ const bcrypt = require('bcryptjs');
 const User = require('../user/User');
 const config = require('../config');
 const VerifyToken = require('./VerifyToken');
+const VerifyEmail = require('./VerifyEmail');
 const router = express.Router();
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-router.post('/register', (req, res) => {
+router.post('/register', VerifyEmail, (req, res) => {
   if (req.body.password !== req.body.confirmedPassword || req.body.password.length < 8) {
     return res.status(500).send("There was a problem registering the user.")
   }
@@ -46,7 +47,7 @@ router.post('/login', (req, res) => {
       return res.status(500).send({message : 'Error on the server.'});
     }
     if (!user) {
-      return res.status(404).send({message : 'Username or password incorrect'});
+      return res.status(404).send({message : 'User not found'});
     }
     let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
     if (!passwordIsValid) {
