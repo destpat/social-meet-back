@@ -55,6 +55,7 @@ router.post('/login', (req, res) => {
     let token = jwt.sign({ id: user._id }, config.secret, {
       expiresIn: 86400 // expires in 24 hours
     });
+    console.log(`Good, the user ${req.body.email} has been authentificated succesfully`);
     res.status(200).send({ auth: true, token: token });
   });
 });
@@ -70,5 +71,9 @@ router.get('/my-profile', VerifyToken, (req, res, next) => {
     res.status(200).send(user);
   });
 });
+
+router.post('/verify-token', VerifyToken, (req, res, next) => {
+  res.status(200).send({auth: true});
+})
 
 module.exports = router;

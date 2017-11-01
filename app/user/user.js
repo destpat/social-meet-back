@@ -56,7 +56,7 @@ let UserSchema = new mongoose.Schema({
     required: true
   },
   birthDate: {
-    type: String,
+    type: Date,
     required: true
   }
 });
