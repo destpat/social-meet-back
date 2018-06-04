@@ -56,25 +56,20 @@ router.post('/login', (req, res) => {
     let token = jwt.sign({ id: user._id }, config.secret, {
       expiresIn: 86400 // expires in 24 hours
     });
-    console.log(`Good, the user ${req.body.email} has been authentificated succesfully`);
     res.status(200).send({ auth: true, token: token });
   });
 });
 
-router.get('/my-profile', VerifyToken, (req, res, next) => {
-  User.findById(req.userId, { password: 0 }, (err, user) => {
+router.post('/verify-token', VerifyToken, (req, res) => {
+  User.findById(req.userId, (err, user) => {
     if (err) {
-      return res.status(500).send("There was a problem finding the user.");
+      return res.status(500).send("There was a problem finding the user, please route from ( /verify-token )");
     }
     if (!user) {
-      return res.status(404).send("No user found.");
+      return res.status(404).send(`User with id ${req.UserId} no found`);
     }
-    res.status(200).send(user);
+    res.status(200).send({auth: true});
   });
-});
-
-router.post('/verify-token', VerifyToken, (req, res, next) => {
-  res.status(200).send({auth: true});
 })
 
 module.exports = router;
