@@ -8,17 +8,48 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 // @TODO
 // Define solution for adding comment
-router.get('/newer', VerifyToken, function (req, res) {
+router.get('/newer', VerifyToken, (req, res) => {
   User.find({}, 'snapchat photo')
       .sort('-registerDate')
       .limit(55)
-      .exec(function (err, users) {
+      .exec((err, user) => {
         if (err) {
-          return res.status(500).send("There was a problem finding the users.");
+          return res.status(500).send("There was a problem finding the user.");
         }
-        res.status(200).send(users);
+        if (!user) {
+          return res.status(404).send("No user found.");
+        }
+        res.status(200).send(user);
       });
     });
+
+// @TODO
+// Define solution for adding comments
+router.put('/update-profile', VerifyToken, (req, res) => {
+  const { snapchat, instagram, sex, origin, eyesColor, birthDate } = req.body;
+  let updatedData = {
+    snapchat: snapchat,
+    instagram: instagram,
+    sex: sex,
+    origin: origin,
+    eyesColor: eyesColor,
+    birthDate: birthDate
+  };
+  User.findOneAndUpdate(req.userId, updatedData, (err, user) => {
+    if (err) {
+      return res.status(500).send(
+        {
+          message: `There was a problem when updating user with id ${req.userId}`,
+          error: err.message
+        }
+      )
+    }
+    if (!user) {
+      return res.status(404).send("No user found.");
+    }
+    res.status(200).send({updated : true});
+  });
+});
 
 // @TODO
 // Define solution for adding comment
@@ -29,10 +60,10 @@ router.get('/my-profile', VerifyToken, (req, res) => {
     }
     if (!user) {
       return res.status(404).send("No user found.");
-    }
-    res.status(200).send(user);
+      }
+      res.status(200).send(user);
+    });
   });
-});
 
 // @TODO
 // Define solution for adding comment

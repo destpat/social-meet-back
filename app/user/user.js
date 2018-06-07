@@ -33,7 +33,7 @@ let UserSchema = new mongoose.Schema({
   registerDate: {
     type: String
   },
-  sexe: {
+  sex: {
     type: String,
     required: true,
     validator: {

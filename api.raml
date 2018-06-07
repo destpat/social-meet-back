@@ -131,3 +131,15 @@ version: v1
                 {
                   "message": "Your are not allow to access to this page"
                 }
+  /update-profile:
+    description: update user information
+    get:
+      description: update user information
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  updated: true
+                }

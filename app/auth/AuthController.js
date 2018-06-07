@@ -24,7 +24,7 @@ router.post('/register', VerifyEmail, (req, res) => {
     snapchat: req.body.snapchat,
     instagram: req.body.instagram,
     password : hashedPassword,
-    sexe: req.body.sexe,
+    sex: req.body.sex,
     origin: req.body.origin,
     city: req.body.city,
     eyesColor: req.body.eyesColor,
